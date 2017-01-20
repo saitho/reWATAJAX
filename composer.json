@@ -1,6 +1,7 @@
 {
   "require": {
-    "PHPOffice/PHPExcel": "^1.8.1",
+  },
+  "suggest": {
     "doctrine/orm"      : "^2.5"
   }
 }
