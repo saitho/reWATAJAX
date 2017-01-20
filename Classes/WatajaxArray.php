@@ -12,15 +12,16 @@
 
 class WatajaxArray extends Watajax {
 	
-	protected $encoding = "UTF-8";
+	protected $encoding = 'UTF-8';
+	protected $use_manual_search_filter = false;
 	
-	public function __construct($encoding = "UTF-8") {
+	public function __construct($encoding = 'UTF-8') {
 		$this->encoding = $encoding;
 		parent::__construct();
 	}
 	
 	public function getNumberOfPages() {
-		return array("pages" => ceil(count($this->data) / $this->perPage), "items" => count($this->data));
+		return array('pages' => ceil(count($this->data) / $this->perPage), 'items' => count($this->data));
 	}
 	
 	public function getData($ignore_pages = false) {
@@ -40,7 +41,7 @@ class WatajaxArray extends Watajax {
 	
 	public function searchFilterData() {
 		if($this->use_manual_search_filter !== true){
-			if ($this->search != "") {
+			if ($this->search != '') {
 				$this->data = $this->arr_search($this->data, $this->search);
 			}
 			if ($filter = $this->getAppliedFilters()) {
@@ -89,19 +90,20 @@ class WatajaxArray extends Watajax {
 			$f = 'strcasecmp';
 			$arr = $this->data;
 			$l = $this->sortBy;
-			if (isset($this->columns[$l]['sort_type']) && $this->columns[$l]['sort_type'] == "numeric") {
+			if (isset($this->columns[$l]['sort_type']) && $this->columns[$l]['sort_type'] == 'numeric') {
 				$non_numeric_pattern = '@[^0-9,]@';
 				
-				$function = "return (str_replace(',','.',preg_replace('".$non_numeric_pattern."','',trim(strip_tags(\$a[$l])))) > str_replace(',','.',preg_replace('".$non_numeric_pattern."','',trim(strip_tags(\$b[$l])))));";
+				$function = 'return (str_replace(",",".",preg_replace("'.$non_numeric_pattern.'","",trim(strip_tags(\$a[$l])))) > str_replace(",",".",preg_replace("'.$non_numeric_pattern.'","",trim(strip_tags(\$b[$l])))));';
 			} else {
-				$function = "return $f(trim(strip_tags(\$a['$l'])), trim(strip_tags(\$b['$l'])));";
+				$function = 'return $f(trim(strip_tags(\$a["'.$l.'"])), trim(strip_tags(\$b["'.$l.'"])));';
 			}
-			usort($arr, create_function("\$a,\$b", $function));
-			$this->data = (strtoupper($this->sortOrder) == "ASC")? $arr : array_reverse($arr);
+			usort($arr, create_function('\$a,\$b', $function));
+			$this->data = (strtoupper($this->sortOrder) == 'ASC')? $arr : array_reverse($arr);
 		}
 	}
 	
 	public function transformArray() {
+		$data = [];
 		foreach ($this->data as $val) {
 			$fixed_row = array();
 			foreach ($this->columns as $key => $col) {
