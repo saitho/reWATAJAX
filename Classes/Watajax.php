@@ -28,10 +28,12 @@ abstract class Watajax {
 	public $row_tag = "tr";
 	public $column_tag = "td";
 	public $header_column_tag = "th";
+	
+	public $encoding;
 
 	/**
 	 * Controls how numbers are formatted on export
-	 * @var enum .|,
+	 * @var string .|,
 	 */
 	public $decimal_export_standard = ".";
 
@@ -127,7 +129,7 @@ abstract class Watajax {
 	 *
 	 * @param string $class
 	 * @param string $column
-	 * @param eval_expression $test
+	 * @param string $test
 	 */
 	public function addClass($class, $column, $test) {
 		$this->classes[$column][] = array("test" => $test, "class" => $class);
@@ -291,8 +293,8 @@ abstract class Watajax {
 				foreach ($this->columns as $column_id => $column_data) {
 					if ($this->columns[$column_id]["hide"] != true) {
 						if($this->decimal_export_standard == "," || (defined("WATAJAX_DECIMAL_EXPORT_STANDARD") && WATAJAX_DECIMAL_EXPORT_STANDARD == ",")) {
-							$row_data[$column_id] = preg_replace("/^(\d*)\.(\d\d\d)$/", "$1$2", $row_data[$column_id]); // Remove thousand separator
-							$row_data[$column_id] = preg_replace("/^(\d*)\.(\d\d?)$/", "$1,$2", $row_data[$column_id]); // Change to comma to be XLS compatible
+							$row_data[$column_id] = preg_replace('/^(\d*)\.(\d\d\d)$/', '$1$2', $row_data[$column_id]); // Remove thousand separator
+							$row_data[$column_id] = preg_replace('/^(\d*)\.(\d\d?)$/', "$1,$2", $row_data[$column_id]); // Change to comma to be XLS compatible
 						}
 						$column_data_holder = str_replace(array($delimiter, $column_wrapper, "\n", "\t", "\r"), "", html_entity_decode($row_data[$column_id]));
 						$row .= $column_wrapper . strip_tags($column_data_holder . $column_wrapper . $delimiter);
