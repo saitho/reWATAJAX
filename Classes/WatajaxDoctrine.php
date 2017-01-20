@@ -16,11 +16,9 @@ class WatajaxDoctrine extends Watajax {
 	public function getGroupedColumnData($column) {
 		
 	}
-	public function getNumberOfPages() {
-		$items = $this->latestResultCount;
-		return ['pages' => ceil($items/$this->perPage), 'items' => $items];
+	public function getNumberOfResults() {
+		return $this->latestResultCount;
 	}
-	
 	
 	public function __construct(\Doctrine\ORM\EntityManager $entityManager) {
 		parent::__construct();
